@@ -78,10 +78,10 @@ $t = 0.1;
 $j = 0;
 $kmeans = new Kmeans();
 $kmeans->set_j($j);
-for($a=0;$a<5;$a++){
+for($a=0;$a<9;$a++){
 	$centroid = $kmeans->get_centroid($data,3);
 	$j_baru =  round($kmeans->get_distance($data,$centroid),4);
-	$j = round(abs($j_baru-$kmeans->get_j()),4);
+	$j = round(abs($j_baru - $kmeans->get_j()),4);
 	$kmeans->set_j($j);
 //	echo 'iterasi ke '.$a.' fungsi Objective : '.$kmeans->get_j();
 //	echo "</br>";
@@ -91,7 +91,7 @@ for($a=0;$a<5;$a++){
 			$data[$x][2]= $cluster[$x];
 		}
 	}else{
-		break;
+		$a=10;
 	}
 //	echo "<pre>";
 //	print_r($data);
