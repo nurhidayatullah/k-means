@@ -4,11 +4,13 @@
  */ 
 class Kmeans{
 	private $j = 0;
-	function set_j($j){
-		$this->j=$j;
+	private $perubahan = 0;
+	function set_j($j_baru){
+		$this->perubahan = round(abs($j_baru - $this->j),4);
+		$this->j = $j_baru;
 	}
-	function get_j(){
-		return $this->j;
+	function get_perubahan(){
+		return $this->perubahan;
 	}
 	function get_centroid($data,$k){
 		$centroid = array();
@@ -26,9 +28,10 @@ class Kmeans{
 		}
 		for($x=0;$x<$k;$x++){
 			for($y=0;$y<count($centroid[$x]);$y++){
-				$centroid[$x][$y] = $centroid[$x][$y]/$jml[$x];
+				$centroid[$x][$y] = round($centroid[$x][$y]/$jml[$x],4);
 			}
 		}
+	//	echo "centroid : ";print_r($centroid);echo "</br>";
 		return $centroid;
 	}
 
@@ -39,8 +42,9 @@ class Kmeans{
 			for($y = 0;$y < (count($data[$x])-1);$y++){
 				$jarak[$x] = $jarak[$x] + (($data[$x][$y]-$centroid[$cluster-1][$y])*($data[$x][$y]-$centroid[$cluster-1][$y]));
 			}
-			$jarak[$x] = sqrt($jarak[$x]);
+			$jarak[$x] = round(sqrt($jarak[$x]),4);
 		}
+//		echo "jarak : ";print_r($jarak);echo "</br>";
 		return $this->get_objective($jarak);
 	}
 	function get_objective($jarak){
@@ -81,23 +85,18 @@ $kmeans->set_j($j);
 for($a=0;$a<9;$a++){
 	$centroid = $kmeans->get_centroid($data,3);
 	$j_baru =  round($kmeans->get_distance($data,$centroid),4);
-	$j = round(abs($j_baru - $kmeans->get_j()),4);
-	$kmeans->set_j($j);
-//	echo 'iterasi ke '.$a.' fungsi Objective : '.$kmeans->get_j();
-//	echo "</br>";
-	if($kmeans->get_j()>=$t){
+	$kmeans->set_j($j_baru);
+	$perubahan = $kmeans->get_perubahan();
+	if($perubahan>=$t){
 		$cluster = $kmeans->get_cluster($data,$centroid);
 		for($x=0;$x<count($data);$x++){
 			$data[$x][2]= $cluster[$x];
 		}
 	}else{
-		$a=10;
+		break;
 	}
-//	echo "<pre>";
-//	print_r($data);
-//	echo "</pre></br>";
 }
-echo 'fungsi Objective : '.$kmeans->get_j();
+echo 'fungsi Objective iterasi ke '.$a.' : '.$perubahan;
 echo "</br>";
 echo "<pre>";
 print_r($data);
